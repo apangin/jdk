@@ -1544,6 +1544,10 @@ const int ObjectAlignmentInBytes = 8;
   product(bool, SegmentedCodeCache, false,                                  \
           "Use a segmented code cache")                                     \
                                                                             \
+  product(uintx, EmulateFragmentation, 1,                                   \
+          "blow up the CodeHeap with code blobs larger than needed for nmethod")   \
+          range(1, 100)                                                     \
+                                                                            \
   product_pd(uintx, ReservedCodeCacheSize,                                  \
           "Reserved code cache size (in bytes) - maximum code cache size")  \
           constraint(VMPageSizeConstraintFunc, AtParse)                     \
@@ -1561,7 +1565,7 @@ const int ObjectAlignmentInBytes = 8;
           constraint(VMPageSizeConstraintFunc, AtParse)                     \
                                                                             \
   product(bool, HotCodeHeap, false,                                         \
-          "Use a separate code cahe segmented for hot methods")             \
+          "Use a separate code heap for hot methods")                       \
                                                                             \
   product(uintx, HotCodeHeapSize,  8*M,                                     \
           "Size of code heap with hot methods (in bytes)")                  \
