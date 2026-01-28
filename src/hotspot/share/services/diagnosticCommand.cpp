@@ -114,6 +114,7 @@ void DCmd::register_dcmds() {
   DCmdFactory::register_DCmdFactory(new DCmdFactoryImpl<SystemDictionaryDCmd>(full_export));
   DCmdFactory::register_DCmdFactory(new DCmdFactoryImpl<ClassHierarchyDCmd>(full_export));
   DCmdFactory::register_DCmdFactory(new DCmdFactoryImpl<ClassesDCmd>(full_export));
+  DCmdFactory::register_DCmdFactory(new DCmdFactoryImpl<MethodDataDCmd>(full_export));
   DCmdFactory::register_DCmdFactory(new DCmdFactoryImpl<SymboltableDCmd>(full_export));
   DCmdFactory::register_DCmdFactory(new DCmdFactoryImpl<StringtableDCmd>(full_export));
   DCmdFactory::register_DCmdFactory(new DCmdFactoryImpl<metaspace::MetaspaceDCmd>(full_export));
@@ -980,6 +981,27 @@ public:
 void ClassesDCmd::execute(DCmdSource source, TRAPS) {
   VM_PrintClasses vmop(output(), _verbose.value());
   VMThread::execute(&vmop);
+}
+
+static outputStream* dcmd_out;
+
+static void dump_profiled_method(Method* m) {
+  if (m->method_data() == nullptr) {
+    return;
+  }
+
+  ResourceMark rm;
+  stringStream ss;
+  ss.print_cr("------------------------------------------------------------------------");
+  m->print_invocation_count(&ss);
+  ss.cr();
+  m->method_data()->print_data_on(&ss);
+  dcmd_out->print_raw(ss.base(), ss.size());
+}
+
+void MethodDataDCmd::execute(DCmdSource source, TRAPS) {
+  dcmd_out = output();
+  SystemDictionary::methods_do(dump_profiled_method);
 }
 
 #if INCLUDE_CDS

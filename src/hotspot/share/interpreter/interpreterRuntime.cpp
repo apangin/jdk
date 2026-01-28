@@ -1152,6 +1152,16 @@ JRT_ENTRY(MethodCounters*, InterpreterRuntime::build_method_counters(JavaThread*
   return Method::build_method_counters(current, m);
 JRT_END
 
+JRT_ENTRY(MethodData*, InterpreterRuntime::build_mdo(JavaThread* current, Method* m))
+  methodHandle mh(current, m);
+  Method::build_profiling_method_data(mh, THREAD);
+  if (HAS_PENDING_EXCEPTION) {
+    tty->print_cr("TODO: Unexpected exception when creating MDO");
+    CLEAR_PENDING_EXCEPTION;
+  }
+  return m->method_data();
+JRT_END
+
 
 JRT_ENTRY(void, InterpreterRuntime::at_safepoint(JavaThread* current))
   // We used to need an explicit preserve_arguments here for invoke bytecodes. However,

@@ -1185,6 +1185,9 @@ const int ObjectAlignmentInBytes = 8;
   product_pd(bool, ProfileInterpreter,                                      \
           "Profile at the bytecode level during interpretation")            \
                                                                             \
+  product(bool, CodeCoverage, true,                                         \
+          "Collect code coverage statistics")                               \
+                                                                            \
   develop_pd(bool, ProfileTraps,                                            \
           "Profile deoptimization traps at the bytecode level")             \
                                                                             \

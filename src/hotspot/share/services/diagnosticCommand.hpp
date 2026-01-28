@@ -752,6 +752,21 @@ public:
   virtual void execute(DCmdSource source, TRAPS);
 };
 
+class MethodDataDCmd : public DCmd {
+public:
+  MethodDataDCmd(outputStream* output, bool heap) : DCmd(output, heap) {}
+  static const char* name() {
+    return "VM.methoddata";
+  }
+  static const char* description() {
+    return "Dump method profile data.";
+  }
+  static const char* impact() {
+    return "Medium";
+  }
+  virtual void execute(DCmdSource source, TRAPS);
+};
+
 class EventLogDCmd : public DCmdWithParser {
 protected:
   DCmdArgument<char*> _log;

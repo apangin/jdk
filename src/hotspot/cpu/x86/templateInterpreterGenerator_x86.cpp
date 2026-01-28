@@ -595,8 +595,8 @@ void TemplateInterpreterGenerator::generate_fixed_frame(bool native_call) {
   }
 
   // rax is still ConstantPool*, set the constant pool cache
-  __ movptr(rdx, Address(rax, ConstantPool::cache_offset()));
-  __ push(rdx);
+  __ movptr(rax, Address(rax, ConstantPool::cache_offset()));
+  __ push(rax);
 
   __ movptr(rax, rlocals);
   __ subptr(rax, rbp);
@@ -1284,6 +1284,18 @@ address TemplateInterpreterGenerator::generate_normal_entry(bool synchronized) {
 
   // initialize fixed part of activation frame
   generate_fixed_frame(false);
+
+  if (CodeCoverage) {
+    Label has_method_data;
+    __ testptr(rdx, rdx);
+    __ jcc(Assembler::notZero, has_method_data);
+    __ call_VM(noreg, CAST_FROM_FN_PTR(address, InterpreterRuntime::build_mdo), rbx);
+    __ testptr(rax, rax);
+    __ jccb(Assembler::zero, has_method_data);
+    __ addptr(rax, in_bytes(MethodData::data_offset()));
+    __ movptr(Address(rbp, frame::interpreter_frame_mdp_offset * wordSize), rax);
+    __ bind(has_method_data);
+  }
 
   // make sure method is not native & not abstract
 #ifdef ASSERT

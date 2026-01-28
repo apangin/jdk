@@ -170,6 +170,7 @@ private:
   static void    verify_mdp(Method* method, address bcp, address mdp);
 #endif // ASSERT
   static MethodCounters* build_method_counters(JavaThread* current, Method* m);
+  static MethodData* build_mdo(JavaThread* current, Method* m);
 
   // Virtual Thread Preemption
   DEBUG_ONLY(static bool is_preemptable_call(address entry_point);)
